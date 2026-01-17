@@ -5,7 +5,11 @@ import { ModeToggle } from "../../../provider/ModeToggle";
 import { useAuth } from "@/context/AuthContext";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
-export function Header() {
+interface HeaderProps {
+  onAddHabit: () => void;
+}
+
+export function Header({ onAddHabit }: HeaderProps) {
   const today = new Date();
   const { user, logout } = useAuth();
 
@@ -33,7 +37,10 @@ export function Header() {
               <Calendar className="size-4" />
               <span>{formatDate(today)}</span>
             </Button>
-            <Button className="shadow-lg shadow-primary/25 hover:shadow-primary/35 transition-shadow">
+            <Button
+              onClick={onAddHabit}
+              className="shadow-lg shadow-primary/25 hover:shadow-primary/35 transition-shadow"
+            >
               <Plus className="size-4" />
               <span className="hidden sm:inline">New Habit</span>
             </Button>

@@ -3,14 +3,26 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { getCategoryStyle } from "../utils";
 import type { Habit } from "@/types/habit";
+import { useState } from "react";
 
 interface HabitCardProps {
   habit: Habit;
   showActions: boolean;
   onToggleActions: () => void;
   onToggleCheck: () => void;
+  onDelete: () => void;
 }
 
 export function HabitCard({
@@ -18,8 +30,10 @@ export function HabitCard({
   showActions,
   onToggleActions,
   onToggleCheck,
+  onDelete,
 }: HabitCardProps) {
   const category = getCategoryStyle(habit.title);
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
   return (
     <Card
@@ -69,7 +83,14 @@ export function HabitCard({
                     <Edit3 className="size-3.5" />
                     Edit
                   </button>
-                  <button className="w-full px-3 py-1.5 text-sm text-left hover:bg-muted flex items-center gap-2 text-destructive">
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setShowDeleteDialog(true);
+                      onToggleActions();
+                    }}
+                    className="w-full px-3 py-1.5 text-sm text-left hover:bg-muted flex items-center gap-2 text-destructive"
+                  >
                     <Trash2 className="size-3.5" />
                     Delete
                   </button>
@@ -80,6 +101,27 @@ export function HabitCard({
           </div>
         </div>
       </CardContent>
+
+      <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete Habit</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete "{habit.title}"? This action
+              cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={onDelete}
+              className="bg-destructive text-white hover:bg-destructive/90"
+            >
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </Card>
   );
 }

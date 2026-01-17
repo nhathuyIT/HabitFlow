@@ -11,6 +11,8 @@ interface HabitsListProps {
   showActions: string | null;
   onToggleActions: (id: string | null) => void;
   onToggleCheck: (id: string, currentCheck: boolean) => void;
+  onAdd: () => void;
+  onDelete: (id: string) => void;
 }
 
 export function HabitsList({
@@ -20,6 +22,8 @@ export function HabitsList({
   showActions,
   onToggleActions,
   onToggleCheck,
+  onAdd,
+  onDelete,
 }: HabitsListProps) {
   return (
     <section>
@@ -35,7 +39,7 @@ export function HabitsList({
       ) : error ? (
         <HabitsListError error={error} />
       ) : habits.length === 0 ? (
-        <HabitsListEmpty />
+        <HabitsListEmpty onAdd={onAdd} />
       ) : (
         <div className="space-y-3">
           {habits.map((habit) => (
@@ -47,6 +51,7 @@ export function HabitsList({
                 onToggleActions(showActions === habit.id ? null : habit.id)
               }
               onToggleCheck={() => onToggleCheck(habit.id, habit.isCheck)}
+              onDelete={() => onDelete(habit.id)}
             />
           ))}
         </div>
@@ -94,7 +99,7 @@ function HabitsListError({ error }: { error: string }) {
   );
 }
 
-function HabitsListEmpty() {
+function HabitsListEmpty({ onAdd }: { onAdd: () => void }) {
   return (
     <Card className="border-dashed">
       <CardContent className="p-8 text-center">
@@ -108,7 +113,7 @@ function HabitsListEmpty() {
           Start building better habits today. Add your first habit to get
           started!
         </p>
-        <Button>
+        <Button onClick={onAdd}>
           <Plus className="size-4" />
           Add Your First Habit
         </Button>
