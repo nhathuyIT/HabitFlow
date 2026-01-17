@@ -11,13 +11,13 @@ import {
 import { useHabits, useWeekNavigation } from "./hooks";
 
 export default function HomePage() {
-  const { habits, loading, error, stats, handleToggleCheck } = useHabits();
+  const { habits, loading, error, stats, handleCreateHabit, handleToggleCheck } = useHabits();
   const { selectedDate, setSelectedDate, navigateWeek } = useWeekNavigation();
   const [showActions, setShowActions] = useState<string | null>(null);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
-      <Header />
+      <Header onCreateHabit={handleCreateHabit} />
 
       <main className="container mx-auto px-4 py-6 space-y-6">
         <GreetingSection

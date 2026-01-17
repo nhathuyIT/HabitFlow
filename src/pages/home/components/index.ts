@@ -6,3 +6,4 @@ export { HabitCard } from "./HabitCard";
 export { HabitsList } from "./HabitsList";
 export { PerfectDayBanner } from "./PerfectDayBanner";
 export { FloatingActionButton } from "./FloatingActionButton";
+export { AddHabitDialog } from "./AddHabitDialog";

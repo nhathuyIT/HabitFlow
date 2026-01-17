@@ -4,13 +4,33 @@ import { formatDate } from "../utils";
 import { ModeToggle } from "../../../provider/ModeToggle";
 import { useAuth } from "@/context/AuthContext";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { useState } from "react";
+import { AddHabitDialog } from "./AddHabitDialog";
 
-export function Header() {
+interface HeaderProps {
+  onCreateHabit?: (title: string, description: string) => Promise<boolean>;
+}
+
+export function Header({ onCreateHabit }: HeaderProps) {
   const today = new Date();
   const { user, logout } = useAuth();
+  const [dialogOpen, setDialogOpen] = useState(false);
 
   const getInitials = (name: string) => {
     return name.slice(0, 2).toUpperCase();
+  };
+
+  const handleCreateHabit = async (title: string, description: string) => {
+    if (!onCreateHabit) {
+      return false;
+    }
+    
+    if (!user) {
+      return false;
+    }
+    
+    const result = await onCreateHabit(title, description);
+    return result;
   };
 
   return (
@@ -33,7 +53,10 @@ export function Header() {
               <Calendar className="size-4" />
               <span>{formatDate(today)}</span>
             </Button>
-            <Button className="shadow-lg shadow-primary/25 hover:shadow-primary/35 transition-shadow">
+            <Button 
+              className="shadow-lg shadow-primary/25 hover:shadow-primary/35 transition-shadow"
+              onClick={() => setDialogOpen(true)}
+            >
               <Plus className="size-4" />
               <span className="hidden sm:inline">New Habit</span>
             </Button>
@@ -56,6 +79,12 @@ export function Header() {
           </div>
         </div>
       </div>
+
+      <AddHabitDialog
+        open={dialogOpen}
+        onOpenChange={setDialogOpen}
+        onSubmit={handleCreateHabit}
+      />
     </header>
   );
 }
