@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useEffect, useReducer, useMemo, useRef } from "react";
+import { useEffect, useReducer, useMemo, useRef, useCallback } from "react";
 import {
   getHabits,
   createHabit,
@@ -131,63 +131,74 @@ export function useHabits() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.habits, state.loading]);
 
-  const handleCreateHabit = async (title: string, description: string) => {
-    if (!user) return false;
-    try {
-      const newHabit = await createHabit({
-        title,
-        description,
-        userId: user.id,
-        isCheck: false,
-      });
-      dispatch({ type: "ADD_HABIT", payload: newHabit });
-      return true;
-    } catch (err) {
-      console.error("Failed to create habit:", err);
-      return false;
-    }
-  };
+  const handleCreateHabit = useCallback(
+    async (title: string, description: string) => {
+      if (!user) return false;
+      try {
+        const newHabit = await createHabit({
+          title,
+          description,
+          userId: user.id,
+          isCheck: false,
+        });
+        dispatch({ type: "ADD_HABIT", payload: newHabit });
+        return true;
+      } catch (err) {
+        console.error("Failed to create habit:", err);
+        return false;
+      }
+    },
+    [user],
+  );
 
-  const handleUpdateHabit = async (
-    id: string,
-    title: string,
-    description: string,
-  ) => {
-    try {
-      const updated = await updateHabit(id, { title, description });
-      dispatch({ type: "UPDATE_HABIT", payload: updated });
-      return true;
-    } catch (err) {
-      console.error("Failed to update habit:", err);
-      return false;
-    }
-  };
+  const handleUpdateHabit = useCallback(
+    async (id: string, title: string, description: string) => {
+      try {
+        const updated = await updateHabit(id, { title, description });
+        dispatch({ type: "UPDATE_HABIT", payload: updated });
+        return true;
+      } catch (err) {
+        console.error("Failed to update habit:", err);
+        return false;
+      }
+    },
+    [],
+  );
 
-  const handleDeleteHabit = async (id: string) => {
-    const backup = state.habits.find((h) => h.id === id);
-    dispatch({ type: "DELETE_HABIT", payload: id });
-    try {
-      await deleteHabit(id);
-      return true;
-    } catch (err) {
-      console.error("Failed to delete habit:", err);
-      if (backup) dispatch({ type: "ADD_HABIT", payload: backup });
-      return false;
-    }
-  };
+  const handleDeleteHabit = useCallback(
+    async (id: string) => {
+      const backup = state.habits.find((h) => h.id === id);
+      dispatch({ type: "DELETE_HABIT", payload: id });
+      try {
+        await deleteHabit(id);
+        return true;
+      } catch (err) {
+        console.error("Failed to delete habit:", err);
+        if (backup) dispatch({ type: "ADD_HABIT", payload: backup });
+        return false;
+      }
+    },
+    [state.habits],
+  );
 
-  const handleToggleCheck = async (id: string, currentCheck: boolean) => {
-    dispatch({ type: "TOGGLE_HABIT", payload: { id, isCheck: !currentCheck } });
-    try {
-      await toggleHabitCheck(id, !currentCheck);
-    } catch (err) {
-      console.error("Failed to toggle habit:", err);
+  const handleToggleCheck = useCallback(
+    async (id: string, currentCheck: boolean) => {
       dispatch({
         type: "TOGGLE_HABIT",
-        payload: { id, isCheck: currentCheck },
+        payload: { id, isCheck: !currentCheck },
       });
-    }
-  };
+      try {
+        await toggleHabitCheck(id, !currentCheck);
+      } catch (err) {
+        console.error("Failed to toggle habit:", err);
+        dispatch({
+          type: "TOGGLE_HABIT",
+          payload: { id, isCheck: currentCheck },
+        });
+      }
+    },
+    [],
+  );
 
   return {
     habits: state.habits,
