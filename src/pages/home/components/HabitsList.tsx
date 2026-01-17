@@ -13,6 +13,7 @@ interface HabitsListProps {
   onToggleCheck: (id: string, currentCheck: boolean) => void;
   onAdd: () => void;
   onDelete: (id: string) => void;
+  onEdit: (id: string) => void;
 }
 
 export function HabitsList({
@@ -24,6 +25,7 @@ export function HabitsList({
   onToggleCheck,
   onAdd,
   onDelete,
+  onEdit,
 }: HabitsListProps) {
   return (
     <section>
@@ -52,6 +54,7 @@ export function HabitsList({
               }
               onToggleCheck={() => onToggleCheck(habit.id, habit.isCheck)}
               onDelete={() => onDelete(habit.id)}
+              onEdit={() => onEdit(habit.id)}
             />
           ))}
         </div>
