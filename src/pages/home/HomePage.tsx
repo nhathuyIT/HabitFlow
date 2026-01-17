@@ -8,8 +8,10 @@ import {
   PerfectDayBanner,
   FloatingActionButton,
   AddHabitDialog,
+  EditHabitDialog,
 } from "./components";
 import { useHabits, useWeekNavigation } from "./hooks";
+import type { Habit } from "@/types/habit";
 
 export default function HomePage() {
   const {
@@ -20,10 +22,21 @@ export default function HomePage() {
     handleToggleCheck,
     handleCreateHabit,
     handleDeleteHabit,
+    handleUpdateHabit,
   } = useHabits();
   const { selectedDate, setSelectedDate, navigateWeek } = useWeekNavigation();
   const [showActions, setShowActions] = useState<string | null>(null);
   const [showAddDialog, setShowAddDialog] = useState(false);
+  const [showEditDialog, setShowEditDialog] = useState(false);
+  const [editingHabit, setEditingHabit] = useState<Habit | null>(null);
+
+  const handleEdit = (id: string) => {
+    const habit = habits.find((h) => h.id === id);
+    if (habit) {
+      setEditingHabit(habit);
+      setShowEditDialog(true);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
@@ -58,6 +71,7 @@ export default function HomePage() {
           onToggleCheck={handleToggleCheck}
           onAdd={() => setShowAddDialog(true)}
           onDelete={handleDeleteHabit}
+          onEdit={handleEdit}
         />
 
         <PerfectDayBanner show={stats.percentage === 100 && stats.total > 0} />
@@ -69,6 +83,13 @@ export default function HomePage() {
         open={showAddDialog}
         onOpenChange={setShowAddDialog}
         onAdd={handleCreateHabit}
+      />
+
+      <EditHabitDialog
+        open={showEditDialog}
+        onOpenChange={setShowEditDialog}
+        onEdit={handleUpdateHabit}
+        habit={editingHabit}
       />
     </div>
   );

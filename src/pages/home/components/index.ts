@@ -7,3 +7,4 @@ export { HabitsList } from "./HabitsList";
 export { PerfectDayBanner } from "./PerfectDayBanner";
 export { FloatingActionButton } from "./FloatingActionButton";
 export { AddHabitDialog } from "./AddHabitDialog";
+export { EditHabitDialog } from "./EditHabitDialog";

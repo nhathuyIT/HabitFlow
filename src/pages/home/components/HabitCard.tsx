@@ -23,6 +23,7 @@ interface HabitCardProps {
   onToggleActions: () => void;
   onToggleCheck: () => void;
   onDelete: () => void;
+  onEdit: () => void;
 }
 
 export function HabitCard({
@@ -31,6 +32,7 @@ export function HabitCard({
   onToggleActions,
   onToggleCheck,
   onDelete,
+  onEdit,
 }: HabitCardProps) {
   const category = getCategoryStyle(habit.title);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
@@ -79,7 +81,14 @@ export function HabitCard({
               </Button>
               {showActions && (
                 <div className="absolute right-0 top-full mt-1 bg-popover border rounded-lg shadow-lg py-1 min-w-[120px] z-10">
-                  <button className="w-full px-3 py-1.5 text-sm text-left hover:bg-muted flex items-center gap-2">
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onEdit();
+                      onToggleActions();
+                    }}
+                    className="w-full px-3 py-1.5 text-sm text-left hover:bg-muted flex items-center gap-2"
+                  >
                     <Edit3 className="size-3.5" />
                     Edit
                   </button>
