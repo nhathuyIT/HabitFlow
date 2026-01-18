@@ -8,3 +8,5 @@ export { PerfectDayBanner } from "./PerfectDayBanner";
 export { FloatingActionButton } from "./FloatingActionButton";
 export { AddHabitDialog } from "./AddHabitDialog";
 export { EditHabitDialog } from "./EditHabitDialog";
+export { HabitTimer } from "./HabitTimer";
+export { HabitTimerDialog } from "./HabitTimerDialog";

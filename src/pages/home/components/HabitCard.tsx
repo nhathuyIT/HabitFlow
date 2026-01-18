@@ -14,6 +14,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { getCategoryStyle } from "../utils";
+import { HabitTimerDialog } from "./HabitTimerDialog";
 import type { Habit } from "@/types/habit";
 import { useState } from "react";
 
@@ -70,6 +71,17 @@ export function HabitCard({
             </p>
           </div>
           <div className="flex items-center gap-2">
+            {/* Timer Button */}
+            <HabitTimerDialog
+              habit={habit}
+              onTimerComplete={() => {
+                // Auto-check habit when timer completes (optional)
+                if (!habit.isCheck) {
+                  onToggleCheck();
+                }
+              }}
+            />
+
             <div className="relative">
               <Button
                 variant="ghost"
