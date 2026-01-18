@@ -50,7 +50,7 @@ export const HabitTimer = forwardRef<TimerControls, HabitTimerProps>(
     const [audioEnabled, setAudioEnabled] = useState(true);
     const [customMinutes, setCustomMinutes] = useState(defaultDuration);
 
-    const intervalRef = useRef<NodeJS.Timeout | null>(null);
+    const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
     const audioRef = useRef<HTMLAudioElement | null>(null);
     const progressCircleRef = useRef<SVGCircleElement>(null);
     const containerRef = useRef<HTMLDivElement>(null);
