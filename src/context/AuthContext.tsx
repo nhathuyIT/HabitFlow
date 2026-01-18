@@ -1,6 +1,7 @@
 import {
   createContext,
   useContext,
+  useDebugValue,
   useState,
   useEffect,
   type ReactNode,
@@ -82,5 +83,12 @@ export function useAuth() {
   if (!context) {
     throw new Error("useAuth must be used within an AuthProvider");
   }
+  useDebugValue(
+    context.isLoading
+      ? " Loading authentication..."
+      : context.user
+        ? ` Logged in: ${context.user.username || "User"}`
+        : " Not authenticated",
+  );
   return context;
 }
