@@ -16,7 +16,7 @@ import {
 import { getCategoryStyle } from "../utils";
 import { HabitTimerDialog } from "./HabitTimerDialog";
 import type { Habit } from "@/types/habit";
-import { useState } from "react";
+import { useState, memo } from "react";
 
 interface HabitCardProps {
   habit: Habit;
@@ -27,7 +27,7 @@ interface HabitCardProps {
   onEdit: () => void;
 }
 
-export function HabitCard({
+export const HabitCard = memo(function HabitCard({
   habit,
   showActions,
   onToggleActions,
@@ -35,6 +35,7 @@ export function HabitCard({
   onDelete,
   onEdit,
 }: HabitCardProps) {
+  console.log('[HabitCard] Rendering:', habit.title);
   const category = getCategoryStyle(habit.title);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
@@ -145,4 +146,4 @@ export function HabitCard({
       </AlertDialog>
     </Card>
   );
-}
+});
