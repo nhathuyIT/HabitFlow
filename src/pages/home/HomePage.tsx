@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import {
   Header,
   GreetingSection,
@@ -30,17 +30,24 @@ export default function HomePage() {
   const [showEditDialog, setShowEditDialog] = useState(false);
   const [editingHabit, setEditingHabit] = useState<Habit | null>(null);
 
-  const handleEdit = (id: string) => {
-    const habit = habits.find((h) => h.id === id);
-    if (habit) {
-      setEditingHabit(habit);
-      setShowEditDialog(true);
-    }
-  };
+  const handleEdit = useCallback(
+    (id: string) => {
+      const habit = habits.find((h) => h.id === id);
+      if (habit) {
+        setEditingHabit(habit);
+        setShowEditDialog(true);
+      }
+    },
+    [habits],
+  );
+
+  const handleOpenAddDialog = useCallback(() => {
+    setShowAddDialog(true);
+  }, []);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
-      <Header onAddHabit={() => setShowAddDialog(true)} />
+      <Header onAddHabit={handleOpenAddDialog} />
 
       <main className="container mx-auto px-4 py-6 space-y-6">
         <GreetingSection
@@ -69,7 +76,7 @@ export default function HomePage() {
           showActions={showActions}
           onToggleActions={setShowActions}
           onToggleCheck={handleToggleCheck}
-          onAdd={() => setShowAddDialog(true)}
+          onAdd={handleOpenAddDialog}
           onDelete={handleDeleteHabit}
           onEdit={handleEdit}
         />
@@ -77,7 +84,7 @@ export default function HomePage() {
         <PerfectDayBanner show={stats.percentage === 100 && stats.total > 0} />
       </main>
 
-      <FloatingActionButton onClick={() => setShowAddDialog(true)} />
+      <FloatingActionButton onClick={handleOpenAddDialog} />
 
       <AddHabitDialog
         open={showAddDialog}

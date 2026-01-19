@@ -75,6 +75,7 @@ export function useHabits() {
   const userIdRef = useRef(user?.id);
 
   const stats = useMemo(() => {
+    console.log('[useMemo] Calculating stats');
     const completed = state.habits.filter((h) => h.isCheck).length;
     const total = state.habits.length;
     const percentage = total > 0 ? Math.round((completed / total) * 100) : 0;

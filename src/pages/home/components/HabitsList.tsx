@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { HabitCard } from "./HabitCard";
 import type { Habit } from "@/types/habit";
+import { memo, useCallback } from "react";
 
 interface HabitsListProps {
   habits: Habit[];
@@ -16,7 +17,7 @@ interface HabitsListProps {
   onEdit: (id: string) => void;
 }
 
-export function HabitsList({
+export const HabitsList = memo(function HabitsList({
   habits,
   loading,
   error,
@@ -27,6 +28,7 @@ export function HabitsList({
   onDelete,
   onEdit,
 }: HabitsListProps) {
+  console.log('[HabitsList] Rendering');
   return (
     <section>
       <div className="flex items-center justify-between mb-4">
@@ -45,23 +47,64 @@ export function HabitsList({
       ) : (
         <div className="space-y-3">
           {habits.map((habit) => (
-            <HabitCard
+            <MemoizedHabitCard
               key={habit.id}
               habit={habit}
               showActions={showActions === habit.id}
-              onToggleActions={() =>
-                onToggleActions(showActions === habit.id ? null : habit.id)
-              }
-              onToggleCheck={() => onToggleCheck(habit.id, habit.isCheck)}
-              onDelete={() => onDelete(habit.id)}
-              onEdit={() => onEdit(habit.id)}
+              onToggleActions={onToggleActions}
+              onToggleCheck={onToggleCheck}
+              onDelete={onDelete}
+              onEdit={onEdit}
             />
           ))}
         </div>
       )}
     </section>
   );
-}
+});
+
+const MemoizedHabitCard = memo(function MemoizedHabitCard({
+  habit,
+  showActions,
+  onToggleActions,
+  onToggleCheck,
+  onDelete,
+  onEdit,
+}: {
+  habit: Habit;
+  showActions: boolean;
+  onToggleActions: (id: string | null) => void;
+  onToggleCheck: (id: string, currentCheck: boolean) => void;
+  onDelete: (id: string) => void;
+  onEdit: (id: string) => void;
+}) {
+  const handleToggleActions = useCallback(() => {
+    onToggleActions(showActions ? null : habit.id);
+  }, [onToggleActions, showActions, habit.id]);
+
+  const handleToggleCheck = useCallback(() => {
+    onToggleCheck(habit.id, habit.isCheck);
+  }, [onToggleCheck, habit.id, habit.isCheck]);
+
+  const handleDelete = useCallback(() => {
+    onDelete(habit.id);
+  }, [onDelete, habit.id]);
+
+  const handleEdit = useCallback(() => {
+    onEdit(habit.id);
+  }, [onEdit, habit.id]);
+
+  return (
+    <HabitCard
+      habit={habit}
+      showActions={showActions}
+      onToggleActions={handleToggleActions}
+      onToggleCheck={handleToggleCheck}
+      onDelete={handleDelete}
+      onEdit={handleEdit}
+    />
+  );
+});
 
 function HabitsListSkeleton() {
   return (
